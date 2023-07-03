@@ -37,3 +37,18 @@ body{
     background-color: #181818;
     color: #fff;
 }
+.music_controller{
+    position: absolute;
+    bottom: 1em;
+    height: 20vh;
+    padding: 1em;
+}
+.music_controller_container{
+    width: 90%;
+    height: 18vh;
+    background-color: #504E4E;
+    padding: 2em;
+}
+html body{
+    min-height: 100vh;
+}

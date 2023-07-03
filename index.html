@@ -62,7 +62,30 @@
             </table>
         </div>
     </main>
-    <footer class="music_controller">
+    <footer class="music_controller w-100 d-none" >
+        <div class="music_controller_container d-flex w-100">
+            <div class="d-flex flex-column justify-content-center">
+                <img src="./imgs/420.jpg" alt="" height="100px" width="100px" id="playlist_img">
+                <h5 class="text-center" id="active_playlist">420</h5>
+            </div>
+            <div class="d-flex flex-column justify-content-center w-100 p-5">
+                <div class="d-flex justify-content-between w-100">
+                    <span class="material-symbols-outlined">shuffle</span>
+                    <span class="material-symbols-outlined">skip_previous</span>
+                    <span class="material-symbols-outlined">play_arrow</span>
+                    <span class="material-symbols-outlined">skip_next</span>
+                    <span class="material-symbols-outlined">repeat</span>
+                </div>
+                <div class="d-flex justify-content-between w-100">
+                    <p>00.00</p>
+                    <div class="w-100 pe-2 ps-2 pt-1">
+                        <input class="w-100" type="range" id="progressBar" min="0" step="1" value="0" onchange="seekTo(this.value)">
+                    </div>
+                    <p>03.00</p>
+                </div>
+                <iframe width="0" height="0" id='music_player' src="https://www.youtube.com/embed/AH4Vx5zz7Go" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+            </div>
+        </div>
     </footer>
 
 
@@ -89,7 +112,8 @@
                                 </div>
                             </div>
 
-                            <button type="button" class="btn btn-primary" onclick="addUrlField('urlsContainerEdit')">Añadir URL</button>
+                            <button type="button" class="btn btn-primary"
+                                onclick="addUrlField('urlsContainerEdit')">Añadir URL</button>
 
                             <div class="text-center">
                                 <button type="submit" class="btn btn-primary" id="edit_playlist_button">Editar</button>
@@ -157,7 +181,7 @@
             </div>
         </div>
     </div>
-
+    <div id="player"></div>
     <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
