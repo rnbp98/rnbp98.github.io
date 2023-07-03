@@ -1,0 +1,39 @@
+.playlist_div{
+    width: 95%;
+    margin: auto;
+    padding: 1em;
+    background-color: #181818;
+}
+.playlist_div h1{
+    color: white;
+}
+.nav-link{
+    color: white;
+
+}
+.nav-link:hover{
+    background-color: #169B45;
+}
+
+.music_controller{
+    color: white;
+}
+
+#header{
+    background-color: #000 !important;
+    color: #fff !important;
+}
+body{
+    background-color: #000;
+}
+.addbutton span:hover{
+    color: #169B45;
+}
+.table td{
+    background-color: #181818;
+    color: #fff;
+}
+.table th{
+    background-color: #181818;
+    color: #fff;
+}
