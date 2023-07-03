@@ -62,7 +62,7 @@
             </table>
         </div>
     </main>
-    <footer class="music_controller w-100 d-none" >
+    <footer class="music_controller w-100 d-none">
         <div class="music_controller_container d-flex w-100">
             <div class="d-flex flex-column justify-content-center">
                 <img src="./imgs/420.jpg" alt="" height="100px" width="100px" id="playlist_img">
@@ -79,11 +79,15 @@
                 <div class="d-flex justify-content-between w-100">
                     <p>00.00</p>
                     <div class="w-100 pe-2 ps-2 pt-1">
-                        <input class="w-100" type="range" id="progressBar" min="0" step="1" value="0" onchange="seekTo(this.value)">
+                        <input class="w-100" type="range" id="progressBar" min="0" step="1" value="0"
+                            onchange="seekTo(this.value)">
                     </div>
                     <p>03.00</p>
                 </div>
-                <iframe width="0" height="0" id='music_player' src="https://www.youtube.com/embed/AH4Vx5zz7Go" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                <iframe width="0" height="0" id='music_player' src="https://www.youtube.com/embed/AH4Vx5zz7Go"
+                    title="YouTube video player" frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowfullscreen></iframe>
             </div>
         </div>
     </footer>
@@ -103,6 +107,10 @@
                             <div class="form-group">
                                 <label for="name">Nombre:</label>
                                 <input type="text" class="form-control" id="name_e" name="name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="file_e">Cover:</label>
+                                <input type="file" class="form-control" id="file_e" name="img" required accept="image/*" value="./imgs/420.jpg" >
                             </div>
 
                             <div id="urlsContainerEdit">
@@ -142,7 +150,10 @@
                                 <label for="name">Nombre:</label>
                                 <input type="text" class="form-control" id="name" name="name" required>
                             </div>
-
+                            <div class="form-group">
+                                <label for="file">Cover:</label>
+                                <input type="file" class="form-control" id="file" name="img" required accept="image/*" >
+                            </div>
                             <div id="urlsContainer">
                                 <div class="form-group">
                                     <label for="url">URL:</label>
