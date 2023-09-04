@@ -71,6 +71,7 @@ function removeUrlField(button) {
 }
 
 function openEdit(id) {
+  selected_ID = id;
   const jsonData = playlists.filter(function (playlist) {
     return playlist.id === id;
   });
@@ -83,36 +84,43 @@ function openEdit(id) {
   $("#editModal").modal("toggle");
 }
 
-async function editPlaylist() {}
-$("#editPlaylistForm").on("submit", async (event) => {
+$("#editPlaylistForm").on("submit", async function (event) {
   $("#edit_loader").removeAttr("hidden");
   event.preventDefault();
-  const formData = new FormData();
-  formData.append("name", $("#name_e").val());
-  formData.append("coverImage", $("#coverImage").val());
-  console.log($("#coverImage").val());
-  console.log(formData.values());
+  const formData = new FormData(this);
+  const urls = [];
+  Array.from($("#urlsContainerEdit input")).forEach((el) => {
+    urls.push(el.value);
+  });
+  formData.append("music_urls", urls.join(";"));
   const userId = localStorage.getItem("ID");
   var myHeaders = new Headers();
   myHeaders.append("Authorization", localStorage.getItem("API_KEY"));
-  // const reqStatus = await fetch(
-  //   `http://127.0.0.1:3000/api/playlists/?id=${userId}`,
-  //   {
-  //     method: "PATCH",
-  //     headers: myHeaders,
-  //     body: formData,
-  //   }
-  // )
-  //   .then(async (response) => {
-  //     return response.status;
-  //   })
-  //   .catch((error) => {
-  //     console.log(
-  //       "There was a problem with the fetch operation:",
-  //       error.message
-  //     );
-  //   });
-  // console.log(reqStatus)
+  const reqStatus = await fetch(
+    `http://127.0.0.1:3000/api/playlists/${selected_ID}?id=${userId}`,
+    {
+      method: "PATCH",
+      headers: myHeaders,
+      body: formData,
+    }
+  )
+    .then(async (response) => {
+      return response.status;
+    })
+    .catch((error) => {
+      console.log(
+        "There was a problem with the fetch operation:",
+        error.message
+      );
+    });
+  $("#messageModalTitle").html("Actualizado");
+  if (reqStatus != 200) {
+    $("#messageModalTitle").html("Ocurrió un problema");
+  }
+  $("#edit_loader").attr("hidden", true);
+  $("#editModal").modal("toggle");
+  $(".modal-backdrop").remove();
+  $("#messageModal").modal("toggle");
 });
 
 function openDelete(id) {
