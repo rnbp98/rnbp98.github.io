@@ -52,7 +52,7 @@ $("#singup").on("submit", (evt) => {
     body: raw,
     redirect: "follow",
   };
-  fetch("http://localhost:3000/api/users/", requestOptions)
+  fetch("http://68.183.119.179:3000/api/users/", requestOptions)
     .then(async (response) => {
       var fields = ["email", "password", "username", "birthday"];
       fields.forEach((element) => {

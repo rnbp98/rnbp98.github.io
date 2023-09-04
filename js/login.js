@@ -7,7 +7,7 @@ $(document).ready(function () {
     };
     var email = $("#email_password").val();
     fetch(
-      `http://localhost:3000/api/auth/password_reset?email=${email}`,
+      `http://68.183.119.179:3000/api/auth/password_reset?email=${email}`,
       requestOptions
     ).then(async (response) => {
       const res = await response.json();
@@ -31,7 +31,7 @@ $(document).ready(function () {
       body: raw,
       redirect: "follow",
     };
-    await fetch("http://localhost:3000/api/auth/login", requestOptions)
+    await fetch("http://68.183.119.179:3000/api/auth/login", requestOptions)
       .then(async (response) => {
         const res = await response.json();
         if (response.status != 200) {

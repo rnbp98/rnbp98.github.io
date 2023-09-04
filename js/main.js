@@ -42,7 +42,7 @@ async function getPlaylists() {
   };
   const id = localStorage.getItem("ID");
   clearTable();
-  await fetch(`http://localhost:3000/api/playlists?id=${id}`, requestOptions)
+  await fetch(`http://68.183.119.179:3000/api/playlists?id=${id}`, requestOptions)
     .then(async (response) => {
       const jsonData = await response.json();
       playlists = jsonData;
@@ -261,7 +261,7 @@ function playPlaylist(id) {
 
 async function logout() {
   const key = localStorage.getItem("ID");
-  await fetch(`http://localhost:3000/api/auth/logout?id=${key}`, {
+  await fetch(`http://68.183.119.179:3000/api/auth/logout?id=${key}`, {
     method: "GET",
     redirect: "follow",
   });
