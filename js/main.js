@@ -97,7 +97,7 @@ $("#editPlaylistForm").on("submit", async function (event) {
   var myHeaders = new Headers();
   myHeaders.append("Authorization", localStorage.getItem("API_KEY"));
   const reqStatus = await fetch(
-    `http://127.0.0.1:3000/api/playlists/${selected_ID}?id=${userId}`,
+    `http://68.183.119.179:3000/api/playlists/${selected_ID}?id=${userId}`,
     {
       method: "PATCH",
       headers: myHeaders,
@@ -144,7 +144,7 @@ async function deletePlaylist() {
   };
   var userId = localStorage.getItem("ID");
   await fetch(
-    `http://127.0.0.1:3000/api/playlists/${selected_ID}?id=${userId}`,
+    `http://68.183.119.179:3000/api/playlists/${selected_ID}?id=${userId}`,
     requestOptions
   )
     .then((response) => {
@@ -165,7 +165,7 @@ $("#newPlaylistForm").on("submit", async function (event) {
   var myHeaders = new Headers();
   myHeaders.append("Authorization", localStorage.getItem("API_KEY"));
   const reqStatus = await fetch(
-    `http://127.0.0.1:3000/api/playlists/?id=${userId}`,
+    `http://68.183.119.179:3000/api/playlists/?id=${userId}`,
     {
       method: "POST",
       headers: myHeaders,
