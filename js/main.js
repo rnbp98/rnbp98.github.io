@@ -1,127 +1,56 @@
-const playlists = [
-  {
-    id: "op001",
-    user: "Intellbg",
-    name: "Otaku mood",
-    creation_date: "2023-06-12",
-    last_reproduction: "2023-06-13",
-    img: "otaku.jpg",
-    song_url: [
-      "https://www.youtube.com/embed/AH4Vx5zz7Go?autoplay=1",
-      "https://www.youtube.com/watch?v=3eytpBOkOFA",
-      "https://www.youtube.com/watch?v=kzdJkT4kp-A",
-    ],
-  },
-  {
-    id: "op002",
-    user: "Intellbg",
-    name: "420",
-    creation_date: "2023-06-02",
-    last_reproduction: "2023-06-23",
-    img: "420.jpg",
-    song_url: [
-      "https://www.youtube.com/embed/58PCM-x7jlg?autoplay=1",
-      "https://www.youtube.com/watch?v=lIbWIqv-z38",
-    ],
-  },
-  {
-    id: "op003",
-    user: "Sarbg",
-    name: "M0",
-    creation_date: "2023-06-02",
-    last_reproduction: "2023-06-23",
-    img: "metal.jpg",
-    song_url: [
-      "https://www.youtube.com/embed/aoGiR5E8K_A?autoplay=1",
-      "https://www.youtube.com/watch?v=lIbWIqv-z38",
-    ],
-  },
-  {
-    id: "op004",
-    user: "Sarbg",
-    name: "BadBunny",
-    creation_date: "2023-06-02",
-    last_reproduction: "2023-06-23",
-    img: "bb.jpg",
-    song_url: [
-      "https://www.youtube.com/embed/pQ_mv3usXqk?autoplay=1",
-      "https://www.youtube.com/watch?v=Yeu3uu8VAe8",
-      "https://www.youtube.com/watch?v=lIbWIqv-z38",
-    ],
-  },
-  {
-    id: "op005",
-    user: "Uwumang",
-    name: "LateniteJAzz",
-    creation_date: "2023-06-02",
-    last_reproduction: "2023-06-23",
-    img: "jazz.jpg",
-    song_url: [
-      "https://www.youtube.com/embed/4kLOu3813BU?autoplay=1",
-      "https://www.youtube.com/watch?v=Yeu3uu8VAe8",
-      "https://www.youtube.com/watch?v=lIbWIqv-z38",
-    ],
-  },
-];
-function getPlaylists() {
-  //TODO: Correct url api call
-  fetch("http://127.0.0.1:3000/api/playlists")
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Problemas");
-      }
-      return response.json();
-    })
-    .then((jsonData) => {
-      jsonData.forEach((data) => {
-        const tableBody = document.getElementById("playlists_table");
-        const row = document.createElement("tr");
-        const nameCell = document.createElement("td");
-        nameCell.textContent = data.name;
-        row.appendChild(nameCell);
-        const creationCell = document.createElement("td");
-        creationCell.textContent = data.creation_date;
-        row.appendChild(creationCell);
-        const lastCell = document.createElement("td");
-        lastCell.textContent = data.last_reproduction;
-        row.appendChild(lastCell);
-        const actionCell = document.createElement("td");
-        actionCell.innerHTML = `
-        <span class="material-symbols-outlined" onclick="openEdit('${data.id}')">edit</span>
-        <span class="material-symbols-outlined" onclick="openDelete('${data.id}')">delete</span>
-        `;
-        row.appendChild(actionCell);
-        tableBody.appendChild(row);
-      });
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
+var playlists = [];
+var selected_ID = null;
+var playlistIndex = 0;
+var urlCount = 1;
 
-  playlists.forEach((data) => {
-    const tableBody = document.getElementById("playlists_table");
+const tableBody = document.getElementById("playlists_table");
+
+function clearTable() {
+  tableBody.innerHTML = "";
+}
+
+function addToTable(jsonData) {
+  jsonData.forEach((data) => {
     const row = document.createElement("tr");
     const nameCell = document.createElement("td");
     nameCell.textContent = data.name;
     row.appendChild(nameCell);
     const creationCell = document.createElement("td");
-    creationCell.textContent = data.creation_date;
+    creationCell.textContent = data.created;
     row.appendChild(creationCell);
     const lastCell = document.createElement("td");
-    lastCell.textContent = data.last_reproduction;
+    lastCell.textContent = data.mp3Files.length;
     row.appendChild(lastCell);
     const actionCell = document.createElement("td");
     actionCell.innerHTML = `
-    <span class="material-symbols-outlined" onclick="playlist('${data.id}')">play_arrow</span>
-    <span class="material-symbols-outlined" onclick="openEdit('${data.id}')">edit</span>
-    <span class="material-symbols-outlined" onclick="openDelete('${data.id}')">delete</span>
-    `;
+  <span class="material-symbols-outlined" onclick="playPlaylist('${data.id}')">play_arrow</span>
+  <span class="material-symbols-outlined" onclick="openEdit('${data.id}')">edit</span>
+  <span class="material-symbols-outlined" onclick="openDelete('${data.id}')">delete</span>
+  `;
     row.appendChild(actionCell);
     tableBody.appendChild(row);
   });
 }
 
-let urlCount = 1;
+async function getPlaylists() {
+  var myHeaders = new Headers();
+  myHeaders.append("Authorization", localStorage.getItem("API_KEY"));
+  var requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  const id = localStorage.getItem("ID");
+  clearTable();
+  await fetch(`http://localhost:3000/api/playlists?id=${id}`, requestOptions)
+    .then(async (response) => {
+      const jsonData = await response.json();
+      playlists = jsonData;
+      addToTable(jsonData);
+    })
+    .catch((error) => console.log("error", error));
+}
+
 function addUrlField(containerID, val = "") {
   const container = document.getElementById(containerID);
   const urlDiv = document.createElement("div");
@@ -133,7 +62,6 @@ function addUrlField(containerID, val = "") {
                 class="material-symbols-outlined" style='padding:0%'>delete</span></button>
       `;
   container.appendChild(urlDiv);
-  console.log(container);
   urlCount++;
 }
 
@@ -143,103 +71,240 @@ function removeUrlField(button) {
 }
 
 function openEdit(id) {
-  //TODO: Correct url api call
-  fetch("http://127.0.0.1:3000/api/playlists/" + id)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Problemas");
-      }
-      return response.json();
-    })
-    .then((jsonData) => {
-      const data = jsonData[0];
-      $("#name_e").val(data.name);
-      data.song_url.forEach((song, index) => {
-        if (index == 0) {
-          $("#url_e").val(song);
-        } else {
-          addUrlField("urlsContainerEdit", song);
-        }
-        console.log(jsonData);
-      });
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
   const jsonData = playlists.filter(function (playlist) {
     return playlist.id === id;
   });
   const data = jsonData[0];
   $("#name_e").val(data.name);
-  data.song_url.forEach((song, index) => {
-    if (index == 0) {
-      $("#url_e").val(song);
-    } else {
-      addUrlField("urlsContainerEdit", song);
-    }
+  $("#urlsContainerEdit").html("");
+  data.mp3Files.forEach((song, index) => {
+    addUrlField("urlsContainerEdit", song);
   });
   $("#editModal").modal("toggle");
 }
 
+async function editPlaylist() {}
+$("#editPlaylistForm").on("submit", async (event) => {
+  $("#edit_loader").removeAttr("hidden");
+  event.preventDefault();
+  const formData = new FormData();
+  formData.append("name", $("#name_e").val());
+  formData.append("coverImage", $("#coverImage").val());
+  console.log($("#coverImage").val());
+  console.log(formData.values());
+  const userId = localStorage.getItem("ID");
+  var myHeaders = new Headers();
+  myHeaders.append("Authorization", localStorage.getItem("API_KEY"));
+  // const reqStatus = await fetch(
+  //   `http://127.0.0.1:3000/api/playlists/?id=${userId}`,
+  //   {
+  //     method: "PATCH",
+  //     headers: myHeaders,
+  //     body: formData,
+  //   }
+  // )
+  //   .then(async (response) => {
+  //     return response.status;
+  //   })
+  //   .catch((error) => {
+  //     console.log(
+  //       "There was a problem with the fetch operation:",
+  //       error.message
+  //     );
+  //   });
+  // console.log(reqStatus)
+});
+
 function openDelete(id) {
-  fetch("http://127.0.0.1:3000/api/playlists/" + id)
+  selected_ID = id;
+  const jsonData = playlists.filter(function (playlist) {
+    return playlist.id === id;
+  });
+  const data = jsonData[0];
+  $("#delete_modal_content").html("Playlist: " + data.name);
+  $("#deleteModal").modal("toggle");
+  $("#delete_playlist_button").show();
+}
+
+async function deletePlaylist() {
+  var myHeaders = new Headers();
+  myHeaders.append("Authorization", localStorage.getItem("API_KEY"));
+  var requestOptions = {
+    method: "DELETE",
+    headers: myHeaders,
+    redirect: "follow",
+  };
+  var userId = localStorage.getItem("ID");
+  await fetch(
+    `http://127.0.0.1:3000/api/playlists/${selected_ID}?id=${userId}`,
+    requestOptions
+  )
     .then((response) => {
-      if (!response.ok) {
-        throw new Error("Problemas");
-      }
-      return response.json();
-    })
-    .then((jsonData) => {
-      const data = jsonData[0];
-      console.log("Playlist: " + data.name);
-      $("#delete_modal_content").html("Playlist: " + data.name);
+      $("#delete_modal_content").html("Eliminado");
+      $("#delete_playlist_button").hide();
     })
     .catch((error) => {
       console.error("Error:", error);
     });
-  const jsonData = playlists.filter(function (playlist) {
-    return playlist.id === id;
-  });
-  const data = jsonData[0];
-  console.log("Playlist: " + data.name);
-  $("#delete_modal_content").html("Playlist: " + data.name);
-  $("#deleteModal").modal("toggle");
+  await getPlaylists();
 }
 
-document
-  .getElementById("playlistForm")
-  .addEventListener("submit", function (event) {
-    event.preventDefault();
-    const formData = new FormData(this);
-    const urls = [];
-    for (let i = 0; i < urlCount; i++) {
-      const url = formData.get(`url${i}`);
-      if (url) {
-        urls.push(url);
-      }
+$("#newPlaylistForm").on("submit", async function (event) {
+  event.preventDefault();
+  $("#create_loader").removeAttr("hidden");
+  const formData = new FormData(this);
+  const userId = localStorage.getItem("ID");
+  var myHeaders = new Headers();
+  myHeaders.append("Authorization", localStorage.getItem("API_KEY"));
+  const reqStatus = await fetch(
+    `http://127.0.0.1:3000/api/playlists/?id=${userId}`,
+    {
+      method: "POST",
+      headers: myHeaders,
+      body: formData,
     }
-    const playlistData = {
-      name: formData.get("name"),
-      urls: urls,
-    };
-    console.log(playlistData);
-    this.reset();
-    document.getElementById("urlsContainer").innerHTML = `
-        <div class="form-group">
-          <label for="url">URL:</label>
-          <input type="url" class="form-control" name="url" required>
-        </div>
-      `;
-    urlCount = 1;
-  });
+  )
+    .then(async (response) => {
+      return response.status;
+    })
+    .catch((error) => {
+      console.log(
+        "There was a problem with the fetch operation:",
+        error.message
+      );
+    });
+  $("#messageModalTitle").html("Creado");
+  if (reqStatus != 201) {
+    $("#messageModalTitle").html("Ocurrió un problema");
+  }
+  $("#create_loader").attr("hidden", true);
+  $("#creationModal").modal("toggle");
+  $(".modal-backdrop").remove();
+  $("#messageModal").modal("toggle");
+  await getPlaylists();
+});
 
-function playlist(id) {
+const audio = document.querySelector("audio");
+const seekSlider = document.getElementById("seek-slider");
+const currentTimeContainer = document.getElementById("current-time");
+
+seekSlider.addEventListener("input", () => {
+  currentTimeContainer.textContent = calculateTime(seekSlider.value);
+});
+
+const calculateTime = (secs) => {
+  const minutes = Math.floor(secs / 60);
+  const seconds = Math.floor(secs % 60);
+  const returnedSeconds = seconds < 10 ? `0${seconds}` : `${seconds}`;
+  return `${minutes}:${returnedSeconds}`;
+};
+
+const displayDuration = () => {
+  $("#duration").html(calculateTime(audio.duration));
+};
+
+const setSliderMax = () => {
+  seekSlider.max = Math.floor(audio.duration);
+};
+
+if (audio.readyState > 0) {
+  displayDuration();
+  setSliderMax();
+} else {
+  audio.addEventListener("loadedmetadata", () => {
+    displayDuration();
+    setSliderMax();
+  });
+}
+var playState = "play";
+$("#play-icon").on("click", () => {
+  if (playState === "play") {
+    audio.play();
+    $("#play-icon").html("pause");
+    playState = "pause";
+  } else {
+    audio.pause();
+    $("#play-icon").html("play_arrow");
+    playState = "play";
+  }
+});
+seekSlider.addEventListener("change", () => {
+  audio.currentTime = seekSlider.value;
+});
+audio.addEventListener("timeupdate", () => {
+  seekSlider.value = Math.floor(audio.currentTime);
+  $("#current-time").html(calculateTime(seekSlider.value));
+});
+
+function playPlaylist(id) {
   const jsonData = playlists.filter(function (playlist) {
     return playlist.id === id;
   });
   const data = jsonData[0];
+  playlist = data;
   $(".music_controller").removeClass("d-none");
-  $("#active_playlist").html(data.name);
-  $("#playlist_img").attr("src", "./imgs/" + data.img);
-  document.getElementById("music_player").src=data.song_url[0]
+  $("#active_playlist").html(`${data.name}:${playlistIndex}`);
+  $("#playlist_img").attr("src", data.coverImage);
+  $("#track").attr("src", data.mp3Files[playlistIndex]);
+  audio.play();
+  $("#play-icon").html("pause");
+  playState = "pause";
 }
+
+async function logout() {
+  const key = localStorage.getItem("ID");
+  await fetch(`http://localhost:3000/api/auth/logout?id=${key}`, {
+    method: "GET",
+    redirect: "follow",
+  });
+  localStorage.removeItem("API_KEY");
+  localStorage.removeItem("ID");
+  window.location.href = "/login.html";
+}
+
+$(document).ready(async function () {
+  checkAuth();
+  await getPlaylists();
+
+  $("#delete_playlist_button").on("click", async () => {
+    deletePlaylist();
+  });
+  $("#logout").on("click", async () => {
+    logout();
+  });
+  $("#searchForm").on("submit", async (event) => {
+    event.preventDefault();
+    const searchKey = $("#search_input").val();
+    clearTable();
+    if (!searchKey) {
+      addToTable(playlists);
+      return;
+    }
+    const filtered = playlists.filter((data) => data.name.includes(searchKey));
+    addToTable(filtered);
+  });
+  $("#prev_icon").on("click", () => {
+    playlistIndex--;
+    console.log(playlistIndex);
+    if (playlistIndex < 0) {
+      playlistIndex = playlist.mp3Files.length - 1;
+    }
+    $("#track").attr("src", playlist.mp3Files[playlistIndex]);
+    audio.play();
+    $("#play-icon").html("pause");
+    $("#active_playlist").html(`${playlist.name}:${playlistIndex}`);
+    playState = "pause";
+  });
+  $("#next_icon").on("click", () => {
+    playlistIndex++;
+    console.log(playlistIndex);
+    if (playlistIndex == playlist.mp3Files.length) {
+      playlistIndex = 0;
+    }
+    $("#track").attr("src", playlist.mp3Files[playlistIndex]);
+    audio.play();
+    $("#play-icon").html("pause");
+    $("#active_playlist").html(`${playlist.name}:${playlistIndex}`);
+    playState = "pause";
+  });
+});
